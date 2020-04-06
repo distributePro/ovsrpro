@@ -1,5 +1,5 @@
 xpProOption(zeromq)
-set(VERSION 4.2.3)
+set(ZMQ_VERSION 4.2.3)
 set(REPO https://github.com/zeromq/libzmq)
 set(PRO_ZEROMQ
   NAME zeromq
@@ -7,10 +7,10 @@ set(PRO_ZEROMQ
   LICENSE "LGPL" ${REPO}/blob/master/README.md "LGPL v3 (See License Section)"
   DESC "ZeroMQ is a lightweight messaging kernel that extends standard socket interfaces with more powerful features."
   REPO "repo" ${REPO} "ZeroMQ repo on github"
-  VER ${VERSION}
-  DLURL ${REPO}/archive/v${VERSION}.tar.gz
+  VER ${ZMQ_VERSION}
+  DLURL ${REPO}/archive/v${ZMQ_VERSION}.tar.gz
   DLMD5 ad07f71105fc914e1937683d33b4ee8d
-  DLNAME libzmq-${VERSION}.tar.gz
+  DLNAME libzmq-${ZMQ_VERSION}.tar.gz
 )
 
 function(build_zeromq)

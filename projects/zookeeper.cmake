@@ -3,7 +3,7 @@
 xpProOption(zookeeper)
 set(REPO https://github.com/apache/zookeeper)
 set(REPO_PATH "${CMAKE_BINARY_DIR}/xpbase/Source/zookeeper")
-set(VERSION 3.4.13)
+set(ZOOKEEPER_VERSION 3.4.13)
 if(WIN32)
   set(ZOO_PATCH "${PATCH_DIR}/zookeeper-windows.patch")
 else(UNIX)
@@ -15,12 +15,12 @@ set(PRO_ZOOKEEPER
   LICENSE "open" http://www.apache.org/licenses/ "Apache V2.0"
   DESC "Apache ZooKeeper is an effort to develop and maintain an open-source server which enables highly reliable distributed coordination. -- [windows-only patch](../patches/zookeeper-windows.patch)"
   REPO "repo" ${REPO} "Zookeeper main repo"
-  VER ${VERSION}
+  VER ${ZOOKEEPER_VERSION}
   GIT_ORIGIN ${REPO}
-  GIT_TAG release-${VERSION}
-  DLURL ${REPO}/archive/release-${VERSION}.tar.gz
+  GIT_TAG release-${ZOOKEEPER_VERSION}
+  DLURL ${REPO}/archive/release-${ZOOKEEPER_VERSION}.tar.gz
   DLMD5 c6eeaab9624730f0a16a97dd24838813
-  DLNAME zookeeper-release-${VERSION}.tar.gz
+  DLNAME zookeeper-release-${ZOOKEEPER_VERSION}.tar.gz
   PATCH ${ZOO_PATCH}
 )
 

@@ -1,8 +1,8 @@
 xpProOption(psql)
 
 set(PSQL_REPO https://github.com/postgres/postgres)
-set(VERSION 9.6.10)
-string(REPLACE "." "_" TAG ${VERSION})
+set(PSQL_VERSION 9.6.10)
+string(REPLACE "." "_" TAG ${PSQL_VERSION})
 
 # setup the function arguments used by externpro
 set(PRO_PSQL
@@ -11,7 +11,7 @@ set(PRO_PSQL
   LICENSE "open" http://www.postgresql.org/about/licence "PostgreSQL license"
   DESC "PostgreSQL redistributable binaries"
   REPO "repo" ${PSQL_REPO} "Mirror of the official PostgreSQL GIT repository on github"
-  VER ${VERSION}
+  VER ${PSQL_VERSION}
   GIT_ORIGIN ${PSQL_REPO}.git
   GIT_TAG REL${TAG}
   DLURL https://ftp.postgresql.org/pub/source/v9.6.10/postgresql-9.6.10.tar.gz

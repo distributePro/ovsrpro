@@ -1,16 +1,16 @@
 xpProOption(cppzmq)
-set(VERSION 4.2.1)
+set(CPPZMQ_VERSION 4.2.1)
 set(REPO https://github.com/zeromq/cppzmq)
 set(PRO_CPPZMQ
   NAME cppzmq
   WEB "cppzmq" ${REPO} "cppzmq"
-  LICENSE "MIT" ${REPO}/blob/v${VERSION}/LICENSE "MIT"
+  LICENSE "MIT" ${REPO}/blob/v${CPPZMQ_VERSION}/LICENSE "MIT"
   DESC "cppzmq is a minimal c++ binding to the libzmq functions."
-  REPO "repo" ${REPO}/tree/v${VERSION} "cppzmq repo on github"
-  VER ${VERSION}
-  DLURL ${REPO}/archive/v${VERSION}.tar.gz
+  REPO "repo" ${REPO}/tree/v${CPPZMQ_VERSION} "cppzmq repo on github"
+  VER ${CPPZMQ_VERSION}
+  DLURL ${REPO}/archive/v${CPPZMQ_VERSION}.tar.gz
   DLMD5 72d1296f26341d136470c25320936683
-  DLNAME cppzmq-${VERSION}.tar.gz
+  DLNAME cppzmq-${CPPZMQ_VERSION}.tar.gz
 )
 
 
