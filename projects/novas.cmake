@@ -1,8 +1,4 @@
-########################################
-# novas 
-########################################
 xpProOption(novas)
-set(NOVAS_SRC_PATH ${CMAKE_BINARY_DIR}/xpbase/Source/novas)
 if(WIN32)
   set(NOVAS_DLURL http://aa.usno.navy.mil/software/novas/novas_c/novasc3.1.zip)
   set(NOVAS_DLMD5 23429099025999970b2e5497c57a1e21)
@@ -20,15 +16,67 @@ set(PRO_NOVAS
   DLMD5 ${NOVAS_DLMD5}
   PATCH ${PATCH_DIR}/novas.patch
 )
-########################################
+
+# TODO This is a temporary fix. The USNO website is down. It's not expected to be
+# back up until fall 2020. When it is back up, take out this entire block.
+if(XP_DEFAULT OR XP_PRO_NOVAS)
+  if(NOT EXISTS "${CMAKE_BINARY_DIR}/../_bldpkgs/novasc3.1.tar.gz")
+    set(
+      OP_NOVAS_PATH
+      "OP_NOVAS_PATH-NOTFOUND"
+      CACHE
+      FILEPATH
+      "The path to the NOVAS archive file on your disk."
+    )
+    if(NOT EXISTS "${OP_NOVAS_PATH}")
+      message(
+        SEND_ERROR
+        "Cannot find novasc3.1.tar.gz. Ensure OP_NOVAS_PATH is set to the correct path."
+      )
+      return()
+    endif()
+    file(MD5 "${OP_NOVAS_PATH}" actual_md5)
+    if(NOT actual_md5 STREQUAL NOVAS_DLMD5)
+      message(
+        SEND_ERROR
+        "${OP_NOVAS_PATH} is incorrect or is corrupt.\n"
+        "  Actual MD5:   ${actual_md5}\n"
+        "  Expected MD5: ${NOVAS_DLMD5}"
+      )
+      return()
+    endif()
+    file(COPY "${OP_NOVAS_PATH}" DESTINATION "${CMAKE_BINARY_DIR}/../_bldpkgs/")
+  endif()
+endif()
+file(MD5 "${CMAKE_BINARY_DIR}/../_bldpkgs/novasc3.1.tar.gz" actual_md5)
+if(NOT actual_md5 STREQUAL NOVAS_DLMD5)
+  message(
+    SEND_ERROR
+    "Something failed in the copy operation for novasc3.1.tar.gz."
+    "  Actual MD5:   ${actual_md5}"
+    "  Expected MD5: ${NOVAS_DLMD5}"
+  )
+  return()
+endif()
+
+
+function(patch_novas)
+  if(NOT (XP_DEFAULT OR XP_PRO_NOVAS))
+    return()
+  endif()
+  xpPatchProject(${PRO_NOVAS})
+endfunction()
+
+
 function(build_novas)
   if (NOT (XP_DEFAULT OR XP_PRO_NOVAS))
     return()
   endif()
-  configure_file(${PRO_DIR}/use/useop-novas-config.cmake ${STAGE_DIR}/share/cmake/
-    @ONLY NEWLINE_STYLE LF
+  configure_file(
+    "${PRO_DIR}/use/useop-novas-config.cmake"
+    "${STAGE_DIR}/share/cmake/"
+    @ONLY
+    NEWLINE_STYLE LF
   )
-
   xpCmakeBuild(novas)
-
 endfunction()

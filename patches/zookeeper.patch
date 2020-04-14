@@ -1,0 +1,36 @@
+diff --git a/build.xml b/build.xml
+index f40db15a..d6f0e78a 100644
+--- a/build.xml
++++ b/build.xml
+@@ -79,8 +79,8 @@ xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
+     <property name="revision.properties" value="revision.properties" />
+     <property file="${basedir}/src/java/${revision.properties}" />
+     
+-    <property name="javac.target" value="1.6" />
+-    <property name="javac.source" value="1.6" />
++    <property name="javac.target" value="1.7" />
++    <property name="javac.source" value="1.7" />
+ 
+     <property name="src.dir" value="${basedir}/src" />
+     <property name="java.src.dir" value="${src.dir}/java/main" />
+diff --git a/src/c/configure.ac b/src/c/configure.ac
+index 2483d38f..3da240fb 100644
+--- a/src/c/configure.ac
++++ b/src/c/configure.ac
+@@ -29,13 +29,9 @@ AC_CONFIG_HEADER([config.h])
+ AC_ARG_WITH(cppunit,
+         [  --without-cppunit       do not use CPPUNIT])
+ 
+-if test "$with_cppunit" = "no" ; then
+-   CPPUNIT_PATH="No_CPPUNIT"
+-   CPPUNIT_INCLUDE=
+-   CPPUNIT_LIBS=
+-else
+-   AM_PATH_CPPUNIT(1.10.2)
+-fi
++CPPUNIT_PATH="No_CPPUNIT"
++CPPUNIT_INCLUDE=
++CPPUNIT_LIBS=
+ 
+ if test "$CALLER" = "ANT" ; then
+ CPPUNIT_CFLAGS="$CPPUNIT_CFLAGS -DZKSERVER_CMD=\"\\\"${base_dir}/src/c/tests/zkServer.sh\\\"\""

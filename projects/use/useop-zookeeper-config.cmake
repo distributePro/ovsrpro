@@ -25,7 +25,7 @@ if(WIN32)
 else()
   # Unix just needs the .a
   if(${build_type} STREQUAL debug)
-    set(Zookeeper_LIB ${Zookeeper_LIBS_DIR}/zookeeperDebug/libzookeeper_mt.a)
+    set(Zookeeper_LIB ${Zookeeper_LIBS_DIR}/libzookeeper_mt-d.a)
   else()
     set(Zookeeper_LIB ${Zookeeper_LIBS_DIR}/libzookeeper_mt.a)
   endif()
