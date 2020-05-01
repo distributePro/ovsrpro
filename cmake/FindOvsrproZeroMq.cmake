@@ -70,27 +70,29 @@ find_package_handle_standard_args(
   VERSION_VAR OvsrproZeroMq_VERSION
 )
 
-add_library(zeromq::zeromq IMPORTED UNKNOWN)
-set_target_properties(
-  zeromq::zeromq
-  PROPERTIES
-    INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${OvsrproZerMq_INCLUDE_DIR}"
-    IMPORTED_LOCATION "${OvsrproZeroMq_LIBRARY_RELEASE}"
-    IMPORTED_LOCATION_RELEASE "${OvsrproZeroMq_LIBRARY_RELEASE}"
-    IMPORTED_LOCATION_MINSIZEREL "${OvsrproZeroMq_LIBRARY_RELEASE}"
-    IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
-)
-if(OvsrproZeroMq_LIBRARY_DEBUG)
+if(OvsrproZeroMq_FOUND)
+  add_library(zeromq::zeromq IMPORTED UNKNOWN)
   set_target_properties(
     zeromq::zeromq
     PROPERTIES
-      IMPORTED_LOCATION_DEBUG "${OvsrproZeroMq_LIBRARY_DEBUG}"
-      IMPORTED_LOCATION_MINSIZEREL "${OvsrproZeroMq_LIBRARY_DEBUG}"
-      IMPORTED_LOCATION_RELWITHDEBINFO "${OvsrproZeroMq_LIBRARY_DEBUG}"
+      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${OvsrproZerMq_INCLUDE_DIR}"
+      IMPORTED_LOCATION "${OvsrproZeroMq_LIBRARY_RELEASE}"
+      IMPORTED_LOCATION_RELEASE "${OvsrproZeroMq_LIBRARY_RELEASE}"
+      IMPORTED_LOCATION_MINSIZEREL "${OvsrproZeroMq_LIBRARY_RELEASE}"
+      IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
   )
-  set_property(
-    TARGET zeromq::zeromq
-    APPEND
-    PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
-  )
+  if(OvsrproZeroMq_LIBRARY_DEBUG)
+    set_target_properties(
+      zeromq::zeromq
+      PROPERTIES
+        IMPORTED_LOCATION_DEBUG "${OvsrproZeroMq_LIBRARY_DEBUG}"
+        IMPORTED_LOCATION_MINSIZEREL "${OvsrproZeroMq_LIBRARY_DEBUG}"
+        IMPORTED_LOCATION_RELWITHDEBINFO "${OvsrproZeroMq_LIBRARY_DEBUG}"
+    )
+    set_property(
+      TARGET zeromq::zeromq
+      APPEND
+      PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
+    )
+  endif()
 endif()

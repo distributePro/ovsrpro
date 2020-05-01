@@ -53,6 +53,8 @@ find_package_handle_standard_args(
   VERSION_VAR OvsrproCppZmq_VERSION
 )
 
-add_library(cppzmq INTERFACE)
-add_library(cppzmq::cppzmq ALIAS cppzmq)
-target_include_directories(cppzmq SYSTEM INTERFACE "${header_path}")
+if(OvsrproCppZmq_FOUND)
+  add_library(cppzmq INTERFACE)
+  add_library(cppzmq::cppzmq ALIAS cppzmq)
+  target_include_directories(cppzmq SYSTEM INTERFACE "${header_path}")
+endif()
