@@ -1,6 +1,6 @@
 #[========================================================================[.rst:
-FindOvsrproCppZmq
-=================
+Findcppzmq
+==========
 
 Finds the C++ ZeroMQ library installed as part of Ovsrpro.
 
@@ -15,11 +15,11 @@ Result Variables
 
 This module defines the following variables:
 
-``OvsrproCppZmq_FOUND``
+``cppzmq_FOUND``
   True if the Ovsrpro C++ ZeroMQ library is found.
-``OvsrproCppZmq_INCLUDE_DIR``
+``cppzmq_INCLUDE_DIR``
   The path to the C++ ZeroMQ header files.
-``OvsrproCppZmq_VERSION``
+``cppzmq_VERSION``
   The version of C++ ZeroMQ that was found.
 #]========================================================================]
 
@@ -27,34 +27,37 @@ if(TARGET cppzmq::cppzmq)
   return()
 endif()
 
-if(OvsrproCppZmq_FIND_REQUIRED)
+if(cppzmq_FIND_REQUIRED)
   set(required "REQUIRED")
 endif()
-if(OvsrproCppZmq_FIND_QUIETLY)
+if(cppzmq_FIND_QUIETLY)
   set(quiet "QUIET")
 endif()
-find_package(OvsrproZeroMq ${required} ${quiet})
+find_package(libzmq ${required} ${quiet})
 
 find_path(
-  OvsrproCppZmq_INCLUDE_DIR
+  cppzmq_INCLUDE_DIR
   NAMES zmq.hpp
   PATHS "${ovsrpro_INCLUDE_DIR}/cppzmq"
   DOC "The location of the C++ ZeroMQ header files."
 )
-mark_as_advanced(OvsrproCppZmq_INCLUDE_DIR)
+mark_as_advanced(cppzmq_INCLUDE_DIR)
 
 # TODO Replace this with the version variable, so it can be configured.
-set(OvsrproCppZmq_VERSION "4.2.1")
+set(cppzmq_VERSION "4.2.1")
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
-  OvsrproCppZmq
-  REQUIRED_VARS OvsrproCppZmq_INCLUDE_DIR
-  VERSION_VAR OvsrproCppZmq_VERSION
+  cppzmq
+  REQUIRED_VARS cppzmq_INCLUDE_DIR
+  VERSION_VAR cppzmq_VERSION
 )
 
-if(OvsrproCppZmq_FOUND)
-  add_library(cppzmq INTERFACE)
-  add_library(cppzmq::cppzmq ALIAS cppzmq)
-  target_include_directories(cppzmq SYSTEM INTERFACE "${header_path}")
+if(cppzmq_FOUND)
+  add_library(cppzmq::cppzmq IMPORTED UNKNOWN)
+  set_target_properties(
+    cppzmq::cppzmq
+    PROPERTIES
+      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${cppzmq_INCLUDE_DIR}"
+  )
 endif()
