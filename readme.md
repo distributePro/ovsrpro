@@ -36,50 +36,64 @@ A few notes about the `find_package()` command:
 1. `EXACT` is required. If it's omitted, it is forced by *Findovsrpro.cmake*
    and a warning is issued.
 
-If ovsrpro is found, *share/cmake* is appended to `CMAKE_MODULE_PATH`
-automatically. To find ovsrpro projects, add `find_package()` commands. The
-project names must all be prefixed with "Ovsrpro".
+If ovsrpro is found, the following variables are set:
+
+<!-- markdownlint-disable MD013 -->
+| Variable | Description |
+|:---|:---|
+| `ovsrpro_FOUND` | This is set to `true` if ovsrpro is found, and `false` if it not. |
+| `ovsrpro_ROOT_DIR` | This is set to the root path where ovsrpro is installed. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/* |
+| `ovsrpro_INCLUDE_DIR` | This is the root path to the project headers files. Each project will have a separate subdirectory within this path. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/include/*. Ovsrpro users typically should not need to use this. |
+| `ovsrpro_LIBRARY_DIR` | This is the path to the project library files. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/lib/*. Ovsrpro users typically should not need to use this. |
+| `ovsrpro_CONFIG_PATH` | This the path to find the Qt5 CMake find scripts. This is needed to find Qt5 using `find_package()`. |
+<!-- markdownlint-disable MD013 -->
+
+`${ovsrpro_ROOT_DIR}`*/share/cmake* is appended to `CMAKE_MODULE_PATH`
+automatically. To find ovsrpro projects, except for Qt5, add `find_package()`
+commands. The project names must all be prefixed with "Ovsrpro".
 
 ```cmake
-find_package(OvsrproQt)
-find_package(OvsrproLibrdkafka)
-find_package(OvsrproZooKeeper)
+find_package(librdkafka)
+find_package(zookeeper)
 ```
 
-If projects are found, imported targets are available. If a project supports
-imported targets natively, those same targets will be available. For example, if
-you search for the Qt5 Core module, you will have the imported target
-`Qt5::Core`.
+See each Find module's documentation for accepted components, define variables,
+and imported targets.
+
+To use Qt5, you must specify `HINTS` and `NO_DEFAULT_PATH` in `find_package()`.
+This uses the CMake configuration scripts shipped with Qt5.
 
 ```cmake
-find_package(OvsrproQt COMPONENTS Core)
+find_package(
+   Qt5
+   HINTS "${ovsrpro_CONFIG_PATH}"
+   NO_DEFAULT_PATH
+   COMPONENTS Core
+)
+```
+
+Here is a full example:
+
+```cmake
+find_package(ovsrpro 20.04.1 REQUIRED EXACT)
+find_package(librdkafka COMPONENTS CPP)
+find_package(zookeeper COMPONENTS CPP)
+find_package(
+   Qt5
+   HINTS "${ovsrpro_CONFIG_PATH}"
+   NO_DEFAULT_PATH
+   COMPONENTS Core Gui
+)
 add_executable(AnApplication AnApplication.cpp)
-target_link_libraries(AnApplication PRIVATE Qt5::Core)
+target_link_libraries(
+   AnApplication
+   PRIVATE
+      librdkafka::cpp
+      Qt5::Core
+      Qt5::Gui
+      zookeeper::cpp
+)
 ```
-
-If a project does not natively support imported targets, an imported target with
-the name `ovsrpro::<project>` will be available, with "project" in all
-lowercase.
-
-```cmake
-find_package(OvsrproZooKeeper)
-add_executable(AnApplication)
-target_link_libraries(AnApplication PRIVATE ovsrpro::zookeeper)
-```
-
-This table lists the details for the various projects.
-
-| Project | Package Name | Targets |
-|:---|:---|:---|:---|
-| CppZmq | OvsrproCppZmq | cppzmq::cppzmq |
-| HDF5 | OvsrproHdf5 | hdf5::c |
-| | | hdf5::cxx |
-| | | hdf5::hl |
-| | | hdf5::hl_cxx |
-| | | hdf5::tools |
-| librdkafka | OvsrproLibrdkafka | librdkafka::c |
-| | | librdkafka::cxx |
-| ZeroMQ | OvsrproZeroMQ | zeromq::zeromq |
 
 ## Building ovsrpro
 
