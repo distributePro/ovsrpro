@@ -65,11 +65,6 @@ function(build_hdf5)
   if(NOT TARGET hdf5)
     patch_hdf5()
   endif()
-  configure_file(
-    "${CMAKE_SOURCE_DIR}/cmake/FindHDF5.cmake"
-    "${STAGE_DIR}/share/cmake/FindHDF5.cmake"
-    @ONLY
-  )
   ExternalProject_Get_Property(hdf5 SOURCE_DIR)
   set(XP_CONFIGURE
     -DBUILD_SHARED_LIBS=OFF
@@ -156,4 +151,9 @@ function(build_hdf5)
           "${STAGE_DIR}/lib"
     )
   endif()
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/FindHDF5.cmake"
+    "${STAGE_DIR}/share/cmake/FindHDF5.cmake"
+    @ONLY
+  )
 endfunction()
