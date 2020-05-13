@@ -134,11 +134,6 @@ function(build_qt5)
   endif()
   qt5CheckDependencies()
   setConfigureOptions()
-  configure_file(
-    "${PRO_DIR}/use/useop-qt5-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-qt5-config.cmake"
-    COPYONLY
-  )
 
   if(WIN32)
     set(MAKE_CMD nmake)
