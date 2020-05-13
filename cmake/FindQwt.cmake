@@ -32,8 +32,7 @@ if(TARGET Qwt::Qwt)
   return()
 endif()
 
-# TODO Replace this with the version variable, so it can be configured.
-set(Qwt_VERSION "6.1.3")
+set(Qwt_VERSION @QWT_VERSION@)
 
 find_path(
   Qwt_INCLUDE_DIR
@@ -67,7 +66,7 @@ if(Qwt_FOUND)
   set_target_properties(
     Qwt::Qwt
     PROPERTIES
-      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${Qwt_INCLUDE_DIR}"
+      INTERFACE_INCLUDE_DIRECTORIES "${Qwt_INCLUDE_DIR}"
       IMPORTED_LOCATION "${Qwt_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_RELEASE "${Qwt_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_MINSIZEREL "${Qwt_LIBRARY_RELEASE}"

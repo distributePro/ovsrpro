@@ -36,15 +36,15 @@ the HDF5 targets.
 This module also provides these imported targets depending on the specified
 components:
 
-``HDF5::C``
+``HDF5::c``
   The C version of HDF5.
-``HDF5::CPP``
+``HDF5::cpp``
   The C++ version of HDF5.
-``HDF5::HL``
+``HDF5::hl``
   The HDF5 High-Level Region C library.
-``HDF5::HL_CPP``
+``HDF5::hl_cpp``
   The HDF5 High-Level Region C++ library.
-``HDF5::Tools``
+``HDF5::tools``
   The library used by various HDF5 tools.
 
 Result Variables
@@ -95,8 +95,7 @@ This module defines the following variables:
   affecting ``HDF5_FOUND``.
 #]========================================================================]
 
-# TODO Replace this with the version variable, so it can be configured.
-set(HDF5_VERSION "1.8.16")
+set(HDF5_VERSION @HDF5_VERSION@)
 
 #------------------------------------------------------------------ szip library
 find_library(
@@ -139,6 +138,13 @@ find_path(
   NO_DEFAULT_PATH
 )
 mark_as_advanced(HDF5_INCLUDE_DIR)
+
+if(HDF5_FIND_COMPONENTS)
+  list(APPEND HDF5_FIND_COMPONENTS C HL)
+  list(REMOVE_DUPLICATES HDF5_FIND_COMPONENTS)
+else()
+  set(HDF5_FIND_COMPONENTS C HL)
+endif()
 
 foreach(component IN LISTS HDF5_FIND_COMPONENTS)
   if(component STREQUAL "C")
@@ -187,6 +193,7 @@ find_package_handle_standard_args(
 if(HDF5_FOUND)
   foreach(component IN ITEMS ${HDF5_FIND_COMPONENTS} SZIP Z)
     string(TOLOWER ${component} target_name)
+    message(STATUS "[ovsrpro] checking for target HDF5::${target_name}")
     if(NOT TARGET HDF5::${target_name})
       add_library(HDF5::${target_name} IMPORTED UNKNOWN)
       set_target_properties(
@@ -196,14 +203,14 @@ if(HDF5_FOUND)
           IMPORTED_LOCATION_RELEASE "${HDF5_LIBRARY_${component}_RELEASE}"
           IMPORTED_LOCATION_MINSIZEREL "${HDF5_LIBRARY_${component}_RELEASE}"
           IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
-          INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIR}"
+          INTERFACE_INCLUDE_DIRECTORIES "${HDF5_INCLUDE_DIR}"
       )
       if(HDF5_LIBRARY_${component}_DEBUG)
         set_target_properties(
           HDF5::${target_name}
           PROPERTIES
-            IMPORTED_LOCATION_DEBUG "${HDF5_LIBRARY_${compoenent}_DEBUG}" 
-            IMPORTED_LOCATION_RELWITHDEBINFO "${HDF5_LIBRARY_${compoenent}_DEBUG}" 
+            IMPORTED_LOCATION_DEBUG "${HDF5_LIBRARY_${component}_DEBUG}" 
+            IMPORTED_LOCATION_RELWITHDEBINFO "${HDF5_LIBRARY_${component}_DEBUG}" 
         )
         set_property(
           TARGET HDF5::${target_name}
@@ -213,4 +220,14 @@ if(HDF5_FOUND)
       endif()
     endif()
   endforeach()
+endif()
+
+if(TARGET HDF5::c)
+  set_target_properties(
+    HDF5::c
+    PROPERTIES
+      IMPORTED_LINK_INTERFACE_LIBRARIES "HDF5::z;HDF5::hl;HDF5::szip;dl")
+endif()
+if(TARGET HDF5::cpp)
+  set_target_properties(HDF5::cpp PROPERTIES IMPORTED_LINK_INTERFACE_LIBRARIES HDF5::c)
 endif()

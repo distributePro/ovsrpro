@@ -43,8 +43,7 @@ find_path(
 )
 mark_as_advanced(cppzmq_INCLUDE_DIR)
 
-# TODO Replace this with the version variable, so it can be configured.
-set(cppzmq_VERSION "4.2.1")
+set(cppzmq_VERSION @CPPZMQ_VERSION@)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
@@ -54,10 +53,8 @@ find_package_handle_standard_args(
 )
 
 if(cppzmq_FOUND)
-  add_library(cppzmq::cppzmq IMPORTED UNKNOWN)
-  set_target_properties(
-    cppzmq::cppzmq
-    PROPERTIES
-      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${cppzmq_INCLUDE_DIR}"
-  )
+  add_library(cppzmq INTERFACE)
+  add_library(cppzmq::cppzmq ALIAS cppzmq)
+  target_include_directories(cppzmq SYSTEM INTERFACE "${cppzmq_INCLUDE_DIR}")
+  target_link_libraries(cppzmq INTERFACE libzmq::libzmq)
 endif()

@@ -31,8 +31,7 @@ if(TARGET psql::psql)
   return()
 endif()
 
-# TODO Replace this with the version variable, so it can be configured.
-set(psql_VERSION 9.6.10)
+set(psql_VERSION @PSQL_VERSION@)
 
 find_path(
   psql_INCLUDE_DIR
@@ -75,7 +74,7 @@ if(psql_FOUND)
   set_target_properties(
     psql::psql
     PROPERTIES
-      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${psql_INCLUDE_DIR}"
+      INTERFACE_INCLUDE_DIRECTORIES "${psql_INCLUDE_DIR}"
       IMPORTED_LOCATION "${psql_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_RELEASE "${psql_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_MINSIZEREL "${psql_LIBRARY_RELEASE}"

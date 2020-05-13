@@ -66,9 +66,9 @@ function(build_hdf5)
     patch_hdf5()
   endif()
   configure_file(
-    "${PRO_DIR}/use/useop-hdf5-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-hdf5-config.cmake"
-    COPYONLY
+    "${CMAKE_SOURCE_DIR}/cmake/FindHDF5.cmake"
+    "${STAGE_DIR}/share/cmake/FindHDF5.cmake"
+    @ONLY
   )
   ExternalProject_Get_Property(hdf5 SOURCE_DIR)
   set(XP_CONFIGURE

@@ -63,9 +63,9 @@ function(build_psql)
   endif()
   xpFindPkg(PKGS openssl)
   configure_file(
-    "${PRO_DIR}/use/useop-psql-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-psql-config.cmake"
-    COPYONLY
+    "${CMAKE_SOURCE_DIR}/cmake/Findpsql.cmake"
+    "${STAGE_DIR}/share/cmake/Findpsql.cmake"
+    @ONLY
   )
   ExternalProject_Get_Property(psql SOURCE_DIR)
   if(WIN32)

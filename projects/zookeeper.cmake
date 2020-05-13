@@ -47,9 +47,9 @@ function(build_zookeeper)
   zookeeperCheckDependencies()
   xpPatchProject(${PRO_ZOOKEEPER})
   configure_file(
-    "${PRO_DIR}/use/useop-zookeeper-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-zookeeper-config.cmake"
-    COPYONLY
+    "${CMAKE_SOURCE_DIR}/cmake/Findzookeeper.cmake"
+    "${STAGE_DIR}/share/cmake/Findzookeeper.cmake"
+    @ONLY
   )
   ExternalProject_Get_Property(zookeeper SOURCE_DIR)
   ExternalProject_Add(

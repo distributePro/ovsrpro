@@ -9,9 +9,9 @@ Imported Targets
 
 This module provides these imported targets
 
-``librdkafka::C``
+``librdkafka::c``
   The C version of librdkafka.
-``librdkafka::CPP``
+``librdkafka::cpp``
   The C++ version of librdkafka.
 
 Result Variables
@@ -37,8 +37,7 @@ This module defines the following variables:
   affecting ``librdkafka_FOUND``.
 #]========================================================================]
 
-# TODO Replace this with the version variable, so it can be configured.
-set(librdkafka_VERSION "0.9.5")
+set(librdkafka_VERSION @LIBRDKAFKA_VERSION@)
 
 find_path(
   librdkafka_INCLUDE_DIR
@@ -92,51 +91,52 @@ find_package_handle_standard_args(
 )
 
 if(librdkafka_FOUND)
-  if(NOT TARGET librdkafka::C)
-    add_library(librdkafka::C IMPORTED UNKNOWN)
+  if(NOT TARGET librdkafka::c)
+    add_library(librdkafka::c IMPORTED UNKNOWN)
     set_target_properties(
-      librdkafka::C
+      librdkafka::c
       PROPERTIES
         IMPORTED_LOCATION "${librdkafka_C_RELEASE_LIBRARY}"
         IMPORTED_LOCATION_RELEASE "${librdkafka_C_RELEASE_LIBRARY}"
         IMPORTED_LOCATION_MINSIZEREL "${librdkafka_C_RELEASE_LIBRARY}"
-        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${librdkafka_INCLUDE_DIR}"
+        INTERFACE_INCLUDE_DIRECTORIES "${librdkafka_INCLUDE_DIR}"
         IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
     )
     if(librdkafka_C_DEBUG_LIBRARY)
       set_target_properties(
-        librdkafka::C
+        librdkafka::c
           PROPERTIES
             IMPORTED_LOCATION_DEBUG "${librdkafka_C_DEBUG_LIBRARY}"
             IMPORTED_LOCATION_RELWITHDEBINFO "${librdkafka_C_DEBUG_LIBRARY}"
       )
       set_property(
-        TARGET librdkafka::C
+        TARGET librdkafka::c
         APPEND
         PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
       )
     endif()
   endif()
-  if(NOT TARGET librdkafka::CPP)
-    add_library(librdkafka::CPP IMPORTED UNKNOWN)
+  if(NOT TARGET librdkafka::cpp)
+    add_library(librdkafka::cpp IMPORTED UNKNOWN)
     set_target_properties(
-      librdkafka::CPP
+      librdkafka::cpp
       PROPERTIES
         IMPORTED_LOCATION "${librdkafka_CXX_RELEASE_LIBRARY}"
         IMPORTED_LOCATION_RELEASE "${librdkafka_CXX_RELEASE_LIBRARY}"
         IMPORTED_LOCATION_MINSIZEREL "${librdkafka_CXX_RELEASE_LIBRARY}"
-        INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${librdkafka_INCLUDE_DIR}"
+        INTERFACE_INCLUDE_DIRECTORIES "${librdkafka_INCLUDE_DIR}"
         IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
+        IMPORTED_LINK_INTERFACE_LIBRARIES librdkafka::c
     )
     if(librdkafka_CXX_DEBUG_LIBRARY)
       set_target_properties(
-        librdkafka::CPP
+        librdkafka::cpp
           PROPERTIES
             IMPORTED_LOCATION_DEBUG "${librdkafka_CXX_DEBUG_LIBRARY}"
             IMPORTED_LOCATION_RELWITHDEBINFO "${librdkafka_CXX_DEBUG_LIBRARY}"
       )
       set_property(
-        TARGET librdkafka::CPP
+        TARGET librdkafka::cpp
         APPEND
         PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
       )

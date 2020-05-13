@@ -41,8 +41,7 @@ This module defines the following variables:
   affecting ``zookeeper_FOUND``.
 #]========================================================================]
 
-# TODO Replace this with the version variable, so it can be configured.
-set(zookeeper_VERSION 3.4.13)
+set(zookeeper_VERSION @ZOOKEEPER_VERSION@)
 
 find_path(
   zookeeper_INCLUDE_DIR
@@ -95,13 +94,13 @@ find_package_handle_standard_args(
 )
 
 if(zookeeper_FOUND)
-  foreach(component IN LISTS ${zookeeper_FIND_COMPONENTS})
+  foreach(component IN LISTS zookeeper_FIND_COMPONENTS)
     if(NOT TARGET zookeeper::${component})
       add_library(zookeeper::${component} IMPORTED UNKNOWN)
       set_target_properties(
         zookeeper::${component}
         PROPERTIES
-          INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${zookeeper_INCLUDE_DIR}"
+          INTERFACE_INCLUDE_DIRECTORIES "${zookeeper_INCLUDE_DIR}"
           IMPORTED_LOCATION "${zookeeper_LIBRARY_${component}_RELEASE}"
           IMPORTED_LOCATION_RELEASE "${zookeeper_LIBRARY_${component}_RELEASE}"
           IMPORTED_LOCATION_MINSIZEREL "${zookeeper_LIBRARY_${component}_RELEASE}"

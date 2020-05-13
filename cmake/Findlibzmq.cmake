@@ -31,8 +31,7 @@ if(TARGET libzmq::libzmq)
   return()
 endif()
 
-# TODO Replace this with the version variable, so it can be configured.
-set(libzmq_VERSION "4.2.3")
+set(libzmq_VERSION @ZMQ_VERSION@)
 
 find_path(
   libzmq_INCLUDE_DIR
@@ -75,7 +74,7 @@ if(libzmq_FOUND)
   set_target_properties(
     libzmq::libzmq
     PROPERTIES
-      INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${libzmq_INCLUDE_DIR}"
+      INTERFACE_INCLUDE_DIRECTORIES "${libzmq_INCLUDE_DIR}"
       IMPORTED_LOCATION "${libzmq_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_RELEASE "${libzmq_LIBRARY_RELEASE}"
       IMPORTED_LOCATION_MINSIZEREL "${libzmq_LIBRARY_RELEASE}"

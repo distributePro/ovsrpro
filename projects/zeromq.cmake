@@ -18,10 +18,9 @@ function(build_zeromq)
     return()
   endif()
   configure_file(
-    "${PRO_DIR}/use/useop-zeromq-config.cmake"
-    "${STAGE_DIR}/share/cmake/"
+    "${CMAKE_SOURCE_DIR}/cmake/Findlibzmq.cmake"
+    "${STAGE_DIR}/share/cmake/Findlibzmq.cmake"
     @ONLY
-    NEWLINE_STYLE LF
   )
   xpSetPostfix()
   set(

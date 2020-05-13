@@ -22,10 +22,9 @@ function(build_cppzmq)
     message(FATAL_ERROR "cppzmq requires zeromq")
   endif()
   configure_file(
-    "${PRO_DIR}/use/useop-cppzmq-config.cmake"
-    "${STAGE_DIR}/share/cmake/"
+    "${CMAKE_SOURCE_DIR}/cmake/Findcppzmq.cmake"
+    "${STAGE_DIR}/share/cmake/Findcppzmq.cmake"
     @ONLY
-    NEWLINE_STYLE LF
   )
   set(
     XP_CONFIGURE
