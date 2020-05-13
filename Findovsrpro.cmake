@@ -73,7 +73,7 @@ find_path(
 )
 
 # TODO Replace this with the version variable, so it can be configured.
-set(ovsrpro_VERSION "20.04.1")
+set(ovsrpro_VERSION @version@)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   ovsrpro
