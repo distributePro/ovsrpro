@@ -2,7 +2,7 @@
 # librdkafka
 ########################################
 xpProOption(librdkafka)
-set(LIBRDKAFKA_VERSION v0.9.5)
+set(LIBRDKAFKA_VERSION 0.9.5)
 set(REPO https://github.com/distributePro/librdkafka)
 set(REPO_UPSTREAM https://github.com/edenhill/librdkafka)
 set(PRO_LIBRDKAFKA
@@ -14,11 +14,11 @@ set(PRO_LIBRDKAFKA
   VER ${LIBRDKAFKA_VERSION}
   GIT_ORIGIN git://github.com/distributepro/librdkafka.git
   GIT_UPSTREAM git://github.com/edenhill/librdkafka.git
-  GIT_TAG xp-${LIBRDKAFKA_VERSION} # what to 'git checkout'
-  GIT_REF ${LIBRDKAFKA_VERSION} # create path from this tag to 'git checkout'
-  DLURL ${REPO_UPSTREAM}/archive/${LIBRDKAFKA_VERSION}.tar.gz
+  GIT_TAG xp-v${LIBRDKAFKA_VERSION} # what to 'git checkout'
+  GIT_REF v${LIBRDKAFKA_VERSION} # create path from this tag to 'git checkout'
+  DLURL ${REPO_UPSTREAM}/archive/v${LIBRDKAFKA_VERSION}.tar.gz
   DLMD5 8e5685baa01554108ae8c8e9c97dc495
-  DLNAME librdkafka-${LIBRDKAFKA_VERSION}.tar.gz
+  DLNAME librdkafka-v${LIBRDKAFKA_VERSION}.tar.gz
   PATCH ${PATCH_DIR}/librdkafka.patch
   DIFF ${REPO}/compare/edenhill:
   )
