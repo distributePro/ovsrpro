@@ -3,3 +3,30 @@ diff -Nuar CMake-hdf5-1.8.16/CMakeLists.txt hdf5/CMakeLists.txt
 +++ hdf5/CMakeLists.txt	2017-01-31 10:27:54.635437994 -0700
 @@ -0,0 +1 @@
 +add_subdirectory(hdf5-1.8.16)
+
+diff --git a/hdf5-1.8.16/CMakeInstallation.cmake b/hdf5-1.8.16/CMakeInstallation.cmake
+index 4798c7d8a0..f262dc8a4d 100644
+--- a/hdf5-1.8.16/CMakeInstallation.cmake
++++ b/hdf5-1.8.16/CMakeInstallation.cmake
+@@ -74,21 +74,6 @@ configure_package_config_file (
+     INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+ )
+ 
+-#-----------------------------------------------------------------------------
+-# Configure the FindHDF5.cmake file for the install directory
+-#-----------------------------------------------------------------------------
+-if (NOT HDF5_EXTERNALLY_CONFIGURED)
+-  configure_file (
+-      ${HDF_RESOURCES_DIR}/FindHDF5.cmake.in
+-      ${HDF5_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/FindHDF5${HDF_PACKAGE_EXT}.cmake @ONLY
+-  )
+-  install (
+-      FILES ${HDF5_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/FindHDF5${HDF_PACKAGE_EXT}.cmake
+-      DESTINATION ${HDF5_INSTALL_CMAKE_DIR}
+-      COMPONENT configinstall
+-  )
+-endif (NOT HDF5_EXTERNALLY_CONFIGURED)
+-
+ #-----------------------------------------------------------------------------
+ # Configure the hdf5-config.cmake file for the install directory
+ #-----------------------------------------------------------------------------
