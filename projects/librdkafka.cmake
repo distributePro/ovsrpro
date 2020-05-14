@@ -26,17 +26,6 @@ function(patch_librdkafka)
 endfunction(patch_librdkafka)
 
 
-# macro(addLibs target)
-#   if(WIN32)
-#     message("adding libs to ${target}")
-#     target_link_libraries(${target}
-#       ${XP_ROOTDIR}/lib/zlibstatic-s.lib
-#       ${XP_ROOTDIR}/lib/crypto-s.lib
-#       ${XP_ROOTDIR}/lib/ssl-s.lib)
-#   endif()
-# endmacro()
-
-
 function(build_librdkafka)
   if(NOT (XP_DEFAULT OR XP_PRO_LIBRDKAFKA))
     return()
