@@ -65,7 +65,6 @@ macro(setConfigureOptions)
     list(APPEND QT5_CONFIGURE -platform linux-g++
       -c++std c++14
       -qt-xcb
-      #-qt-xkbcommon-x11
       -fontconfig
       -optimized-qmake
       -verbose
