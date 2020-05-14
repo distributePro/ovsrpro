@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.9.6)
 project(ovsrpro)
 if(NOT CMAKE_COMPILER_IS_GNUCXX)
-  message(FATAL_ERROR "${CMAKE_CXX_COMPILER} is not supported.")
+  message(WARNING "${CMAKE_CXX_COMPILER} is not supported.")
 endif()
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}) # Findexternpro.cmake
 set(externpro_REV 18.08.4)
