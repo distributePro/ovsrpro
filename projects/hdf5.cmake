@@ -67,7 +67,10 @@ function(build_hdf5)
   endif()
   ExternalProject_Get_Property(hdf5 SOURCE_DIR)
   set(XP_CONFIGURE
+    -DHDF5_EXTERNALLY_CONFIGURED=on
     -DBUILD_SHARED_LIBS=OFF
+    -DBUILD_TESTING=off
+    -DHDF5_BUILD_EXAMPLES=off
     -DHDF5_INSTALL_INCLUDE_DIR=${STAGE_DIR}/include/hdf5
     -DHDF5_INSTALL_DATA_DIR=${STAGE_DIR}/share/hdf5
     -DHDF5_INSTALL_CMAKE_DIR=${STAGE_DIR}/share/cmake
