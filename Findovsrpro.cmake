@@ -21,7 +21,7 @@ if(NOT ovsrpro_FIND_VERSION_EXACT)
   set(ovsrpro_FIND_VERSION_EXACT true)
   ovsrpro_message(
     AUTHOR_WARNING
-    "Ovsrpro requires an exact version match. We recomment adding EXACT to find_package()."
+    "Ovsrpro requires an exact version match. We recommend adding EXACT to find_package()."
   )
 endif()
 
