@@ -44,16 +44,4 @@ if(XP_STEP STREQUAL "build")
     "${STAGE_DIR}/share/cmake/Findovsrpro.cmake"
     @ONLY
   )
-  configure_file(
-    opfunmac.cmake
-    "${STAGE_DIR}/share/cmake/opfunmac.cmake"
-    COPYONLY
-  )
-  configure_file(
-    opopts.cmake.in
-    "${STAGE_DIR}/share/cmake/opopts.cmake"
-    @ONLY
-    NEWLINE_STYLE
-    LF
-  )
 endif()
