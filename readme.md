@@ -15,7 +15,7 @@ Build Overseer [dependencies](projects/README.md) by leveraging
    ```
 1. Run the installer.
    ```bash
-   sudo ./ovsrpro-18.10.1-gcc631-64-Linux.sh --prefix=/opt/extern/ --include-subdir
+   sudo ./ovsrpro-18.10.1-gcc631-64-Linux.sh --prefix=/opt/ovsrpro/ --include-subdir
    ```
    The recommended location for installation is */opt/ovsrpro/*. We also
    recommend using the subdirectory. Both these options are in this example.
@@ -45,12 +45,12 @@ If ovsrpro is found, the following variables are set:
 | `ovsrpro_ROOT_DIR` | This is set to the root path where ovsrpro is installed. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/* |
 | `ovsrpro_INCLUDE_DIR` | This is the root path to the project headers files. Each project will have a separate subdirectory within this path. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/include/*. Ovsrpro users typically should not need to use this. |
 | `ovsrpro_LIBRARY_DIR` | This is the path to the project library files. An example is */opt/ovsrpro/ovsrpro-20.04.1-gcc921-64-Linux/lib/*. Ovsrpro users typically should not need to use this. |
-| `ovsrpro_CONFIG_PATH` | This the path to find the Qt5 CMake find scripts. This is needed to find Qt5 using `find_package()`. |
+| `ovsrpro_CONFIG_PATH` | This is the path to find the Qt5 CMake find scripts. This is needed to find Qt5 using `find_package()`. |
 <!-- markdownlint-disable MD013 -->
 
 `${ovsrpro_ROOT_DIR}`*/share/cmake* is appended to `CMAKE_MODULE_PATH`
 automatically. To find ovsrpro projects, except for Qt5, add `find_package()`
-commands. The project names must all be prefixed with "Ovsrpro".
+commands.
 
 ```cmake
 find_package(librdkafka)
