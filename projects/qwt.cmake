@@ -30,9 +30,9 @@ function(build_qwt)
   endif()
 
   configure_file(
-    "${PRO_DIR}/use/useop-qwt-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-qwt-config.cmake"
-    COPYONLY
+    "${CMAKE_SOURCE_DIR}/cmake/FindQwt.cmake"
+    "${STAGE_DIR}/share/cmake/FindQwt.cmake"
+    @ONLY
   )
 
   if(WIN32)

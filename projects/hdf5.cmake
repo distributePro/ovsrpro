@@ -1,5 +1,6 @@
 xpProOption(hdf5)
 set(HDF5_VERSION 1.8.16)
+string(REPLACE "." "_" HDF5_TAG "${HDF5_VERSION}")
 set(PRO_HDF5
   NAME hdf5
   WEB "HDF-GROUP" http://www.hdfgroup.org "The HDF Group"
@@ -9,6 +10,9 @@ set(PRO_HDF5
   DLURL http://www.hdfgroup.org/ftp/HDF5/prev-releases/hdf5-1.8/hdf5-${HDF5_VERSION}/src/CMake-hdf5-${HDF5_VERSION}.tar.gz
   DLMD5 a7559a329dfe74e2dac7d5e2d224b1c2
   PATCH ${PATCH_DIR}/hdf5.patch
+  REPO https://github.com/HDFGroup/hdf5
+  GIT_ORIGIN git://github.com/HDFGroup/hdf5.git
+  GIT_TAG hdf5-${HDF5_TAG}
 )
 
 
@@ -65,14 +69,11 @@ function(build_hdf5)
   if(NOT TARGET hdf5)
     patch_hdf5()
   endif()
-  configure_file(
-    "${PRO_DIR}/use/useop-hdf5-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-hdf5-config.cmake"
-    COPYONLY
-  )
   ExternalProject_Get_Property(hdf5 SOURCE_DIR)
   set(XP_CONFIGURE
     -DBUILD_SHARED_LIBS=OFF
+    -DBUILD_TESTING=off
+    -DHDF5_BUILD_EXAMPLES=off
     -DHDF5_INSTALL_INCLUDE_DIR=${STAGE_DIR}/include/hdf5
     -DHDF5_INSTALL_DATA_DIR=${STAGE_DIR}/share/hdf5
     -DHDF5_INSTALL_CMAKE_DIR=${STAGE_DIR}/share/cmake
@@ -156,4 +157,9 @@ function(build_hdf5)
           "${STAGE_DIR}/lib"
     )
   endif()
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/cmake/FindHDF5.cmake"
+    "${STAGE_DIR}/share/cmake/FindHDF5.cmake"
+    @ONLY
+  )
 endfunction()

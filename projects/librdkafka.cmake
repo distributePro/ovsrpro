@@ -1,20 +1,29 @@
 xpProOption(librdkafka)
-set(LIBRDKAFKA_VERSION 1.4.0)
+set(LIBRDKAFKA_VERSION 0.9.5)
 set(REPO https://github.com/edenhill/librdkafka)
 set(PRO_LIBRDKAFKA
   NAME librdkafka
   WEB "librdkafka" ${REPO} "librdkafka on github"
   LICENSE "open" ${REPO}/blob/master/LICENSE "2-clause BSD license"
-  DESC "librdkafka is a C library implementation of the Apache Kafka protocol, containing both Producer and Consumer support."
-  REPO "repo" ${REPO} "The Apache Kafka C/C++ library"
+  DESC "librdkafka is a C library implementation of the Apache Kafka protocol, containing both Producer and Consumer support -- [windows-only patch](../patches/librdkafka-windows.patch)"
+  REPO "repo" ${REPO} "The Apache C/C++ library."
   VER ${LIBRDKAFKA_VERSION}
-  GIT_ORIGIN git://github.com/distributepro/librdkafka.git
-  GIT_TAG v${LIBRDKAFKA_VERSION}
-  GIT_REF ${LIBRDKAFKA_VERSION}
+  GIT_ORIGIN git://github.com/edenhill/librdkafka.git
+  GIT_TAG v${LIBRDKAFKA_VERSION} # what to 'git checkout'
   DLURL ${REPO}/archive/v${LIBRDKAFKA_VERSION}.tar.gz
-  DLMD5 8b3c09e50a21beafecd25c26ad48c2e7
-  DLNAME librdkafka-${LIBRDKAFKA_VERSION}.tar.gz
-)
+  DLMD5 8e5685baa01554108ae8c8e9c97dc495
+  DLNAME librdkafka-v${LIBRDKAFKA_VERSION}.tar.gz
+  PATCH ${PATCH_DIR}/librdkafka.patch
+  DIFF ${REPO}/compare/edenhill:
+  )
+
+
+function(patch_librdkafka)
+  if(NOT (XP_DEFAULT OR XP_PRO_LIBRDKAFKA))
+    return()
+  endif()
+  xpPatchProject(${PRO_LIBRDKAFKA})
+endfunction(patch_librdkafka)
 
 
 function(build_librdkafka)
@@ -22,17 +31,19 @@ function(build_librdkafka)
     return()
   endif()
   configure_file(
-    "${PRO_DIR}/use/useop-librdkafka-config.cmake"
-    "${STAGE_DIR}/share/cmake/"
+    "${CMAKE_SOURCE_DIR}/cmake/Findlibrdkafka.cmake"
+    "${STAGE_DIR}/share/cmake/Findlibrdkafka.cmake"
     @ONLY
-    NEWLINE_STYLE LF
   )
   xpSetPostfix()
+  xpStringAppendIfDne(CMAKE_CXX_FLAGS "-fPIC")
+  xpStringAppendIfDne(CMAKE_C_FLAGS "-fPIC")
   set(XP_CONFIGURE
-    -DCMAKE_DEBUG_POSTFIX=${CMAKE_DEBUG_POSTFIX}
-    -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS};-fPIC
-    -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS};-fPIC
-    -DRDKAFKA_BUILD_STATIC=on
-  )
+      -DCMAKE_DEBUG_POSTFIX=${CMAKE_DEBUG_POSTFIX}
+      -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
+      -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
+      -DWITH_SSL=off
+      -DWITH_ZLIB=off
+     )
   xpCmakeBuild(librdkafka "" "${XP_CONFIGURE}")
 endfunction()

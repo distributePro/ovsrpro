@@ -6,12 +6,13 @@ else()
   set(NOVAS_DLURL http://aa.usno.navy.mil/software/novas/novas_c/novasc3.1.tar.gz)
   set(NOVAS_DLMD5 f5dd6f7930b18616154b33aae1ef02d6)
 endif()
+set(NOVAS_VERSION 3.1)
 set(PRO_NOVAS
   NAME novas
   WEB "NOVAS" http://aa.usno.navy.mil/software/novas/novas_info.php "NOVAS"
   LICENSE "open" http://aa.usno.navy.mil/software/novas/novas_c/README.txt "(See Section IV. Using NOVAS in Your Applications)"
   DESC "NOVAS is an integrated package of ANSI C functions for computing many commonly needed quantities in positional astronomy."
-  VER 3.1
+  VER ${NOVAS_VERSION}
   DLURL ${NOVAS_DLURL}
   DLMD5 ${NOVAS_DLMD5}
   PATCH ${PATCH_DIR}/novas.patch
@@ -73,10 +74,9 @@ function(build_novas)
     return()
   endif()
   configure_file(
-    "${PRO_DIR}/use/useop-novas-config.cmake"
-    "${STAGE_DIR}/share/cmake/"
+    "${CMAKE_SOURCE_DIR}/cmake/FindNOVAS.cmake"
+    "${STAGE_DIR}/share/cmake/FindNOVAS.cmake"
     @ONLY
-    NEWLINE_STYLE LF
   )
   xpCmakeBuild(novas)
 endfunction()

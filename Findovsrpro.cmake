@@ -1,132 +1,111 @@
-# - Find an ovsrpro installation.
-# ovsrpro_DIR
-################################################################################
-# should match xpGetCompilerPrefix in externpro's xpfunmac.cmake
-# NOTE: wanted to use externpro version, but chicken-egg problem
-function(getCompilerPrefix _ret)
-  set(options GCC_TWO_VER)
-  cmake_parse_arguments(x "${options}" "" "" ${ARGN})
-  if(MSVC)
-    if(MSVC14)
-      set(prefix vc140)
-    elseif(MSVC12)
-      set(prefix vc120)
-    elseif(MSVC11)
-      set(prefix vc110)
-    elseif(MSVC10)
-      set(prefix vc100)
-    elseif(MSVC90)
-      set(prefix vc90)
-    elseif(MSVC80)
-      set(prefix vc80)
-    elseif(MSVC71)
-      set(prefix vc71)
-    elseif(MSVC70)
-      set(prefix vc70)
-    elseif(MSVC60)
-      set(prefix vc60)
-    else()
-      message(SEND_ERROR "Findovsrpro.cmake: MSVC compiler support lacking")
-    endif()
-  elseif(CMAKE_COMPILER_IS_GNUCXX)
-    exec_program(${CMAKE_CXX_COMPILER}
-      ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpfullversion -dumpversion
-      OUTPUT_VARIABLE GCC_VERSION
-      )
-    if(X_GCC_TWO_VER)
-      set(digits "\\1\\1")
-    else()
-      set(digits "\\1\\2\\3")
-    endif()
-    string(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)?"
-      "gcc${digits}"
-      prefix ${GCC_VERSION}
-      )
-  elseif(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang") # LLVM/Apple Clang (clang.llvm.org)
-    if(${CMAKE_SYSTEM_NAME} STREQUAL Darwin)
-      exec_program(${CMAKE_CXX_COMPILER}
-        ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion
-        OUTPUT_VARIABLE CLANG_VERSION
-        )
-      string(REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.[0-9]+)?"
-        "clang-darwin\\1\\2" # match boost naming
-        prefix ${CLANG_VERSION}
-        )
-    else()
-      string(REGEX REPLACE "([0-9]+)\\.([0-9]+)(\\.[0-9]+)?"
-        "clang\\1\\2" # match boost naming
-        prefix ${CMAKE_CXX_COMPILER_VERSION}
-        )
-    endif()
-  else()
-    message(SEND_ERROR "Findovsrpro.cmake: compiler support lacking: ${CMAKE_CXX_COMPILER_ID}")
+if(NOT ovsrpro_FIND_VERSION)
+  message(FATAL_ERROR "A version of Ovsrpro is required in the find_package() command.")
+endif()
+
+function(ovsrpro_message)
+  if(NOT ovsrpro_FIND_QUIETLY)
+    message(${ARGN})
   endif()
-  set(${_ret} ${prefix} PARENT_SCOPE)
 endfunction()
-function(getNumBits _ret)
-  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(numBits 64)
-  elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    set(numBits 32)
-  else()
-    message(FATAL_ERROR "numBits not 64 or 32")
-  endif()
-  set(${_ret} ${numBits} PARENT_SCOPE)
-endfunction()
-################################################################################
-# TRICKY: clear cached variables each time we cmake so we can change
-# ovsrpro_REV and reuse the same build directory
-unset(ovsrpro_DIR CACHE)
-################################################################################
-# find the path to the ovsrpro directory
-getCompilerPrefix(COMPILER)
-getNumBits(BITS)
-set(ovsrpro_SIG ${ovsrpro_REV}-${COMPILER}-${BITS})
-set(PFX86 "ProgramFiles(x86)")
-find_path(ovsrpro_DIR
-  NAMES
-    ovsrpro_${ovsrpro_SIG}.txt
+
+if(ovsrpro_FIND_COMPONENTS)
+  ovsrpro_message(
+    AUTHOR_WARNING
+    "Ovsrpro does not support components in find_package()."
+  )
+endif()
+
+# Since ovsrpro uses date versioning instead of semantic versioning, we cannot
+# deduce compatibility from the version. So force an exact match to be found.
+if(NOT ovsrpro_FIND_VERSION_EXACT)
+  set(ovsrpro_FIND_VERSION_EXACT true)
+  ovsrpro_message(
+    AUTHOR_WARNING
+    "Ovsrpro requires an exact version match. We recommend adding EXACT to find_package()."
+  )
+endif()
+
+# Figure out the compiler name and version to search for.
+if(CMAKE_COMPILER_IS_GNUCXX)
+  execute_process(
+    COMMAND
+      ${CMAKE_CXX_COMPILER}
+      ${CMAKE_CXX_COMPILER_ARG1}
+      -dumpfullversion
+      -dumpversion
+    OUTPUT_VARIABLE gcc_version
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  string(
+    REGEX REPLACE
+    "([0-9]+)\\.([0-9]+)\\.([0-9]+)?"
+    "gcc\\1\\2\\3"
+    compiler
+    ${gcc_version}
+  )
+else()
+  message(FATAL_ERROR "${CMAKE_CXX_COMPILER_ID} is not supported.")
+endif()
+
+# Get the architecture width to search for.
+cmake_host_system_information(RESULT is_64_bit QUERY IS_64BIT)
+if(is_64_bit)
+  set(bits 64)
+else()
+  set(bits 32)
+endif()
+
+set(ovsrpro_signature ${ovsrpro_FIND_VERSION}-${compiler}-${bits})
+ovsrpro_message(STATUS "Looking for ovsrpro ${ovsrpro_signature}...")
+find_path(
+  ovsrpro_ROOT_DIR
+  NAMES ovsrpro_${ovsrpro_signature}.txt
   PATHS
-    # build versions
-    C:/src/ovsrpro/_bld/ovsrpro_${ovsrpro_SIG}
-    ~/src/ovsrpro/_bld/ovsrpro_${ovsrpro_SIG}
     # environment variable
-    "$ENV{ovsrpro}/ovsrpro ${ovsrpro_SIG}"
-    "$ENV{ovsrpro_DIR}/ovsrpro-${ovsrpro_SIG}-${CMAKE_SYSTEM_NAME}"
+    "$ENV{ovsrpro}/ovsrpro ${ovsrpro_signature}"
+    "$ENV{ovsrpro_ROOT_DIR}/ovsrpro-${ovsrpro_signature}-${CMAKE_SYSTEM_NAME}"
     # installed versions
-    "$ENV{ProgramW6432}/ovsrpro ${ovsrpro_SIG}"
-    "$ENV{${PFX86}}/ovsrpro ${ovsrpro_SIG}"
-    "~/ovsrpro/ovsrpro-${ovsrpro_SIG}-${CMAKE_SYSTEM_NAME}"
-    "/opt/ovsrpro/ovsrpro-${ovsrpro_SIG}-${CMAKE_SYSTEM_NAME}"
-    # symbolic link install option
-    "/opt/ovsrpro/ovsrpro"
+    "~/ovsrpro/ovsrpro-${ovsrpro_signature}-${CMAKE_SYSTEM_NAME}"
+    "/opt/ovsrpro/ovsrpro-${ovsrpro_signature}-${CMAKE_SYSTEM_NAME}"
     # rpm installed location
     "/opt/ovsrpro"
   DOC "ovsrpro directory"
-  )
-if(NOT ovsrpro_DIR)
-  if(DEFINED ovsrpro_INSTALLER_LOCATION)
-    message(FATAL_ERROR "ovsrpro ${ovsrpro_SIG} not found.\n${ovsrpro_INSTALLER_LOCATION}")
-  else()
-    message(FATAL_ERROR "ovsrpro ${ovsrpro_SIG} not found")
-  endif()
-else()
-  set(moduleDir ${ovsrpro_DIR}/share/cmake)
-  set(findFile ${moduleDir}/Findovsrpro.cmake)
-  execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files ${CMAKE_CURRENT_LIST_FILE} ${findFile}
-    RESULT_VARIABLE filesDiff
-    OUTPUT_QUIET
-    ERROR_QUIET
-    )
-  if(filesDiff)
-    message(STATUS "local: ${CMAKE_CURRENT_LIST_FILE}.")
-    message(STATUS "ovsrpro: ${findFile}.")
-    message(AUTHOR_WARNING "Find scripts don't match. You may want to update the local with the ovsrpro version.")
-  endif()
-  message(STATUS "Found ovsrpro: ${ovsrpro_DIR}")
-  list(APPEND OP_MODULE_PATH ${moduleDir})
-  link_directories(${ovsrpro_DIR}/lib)
-  if(EXISTS ${moduleDir}/opfunmac.cmake)
-    include(${moduleDir}/opfunmac.cmake)
-  endif()
-endif()
+)
+
+# TODO Replace this with the version variable, so it can be configured.
+set(ovsrpro_VERSION @version@)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(
+  ovsrpro
+  REQUIRED_VARS ovsrpro_ROOT_DIR
+  VERSION_VAR ovsrpro_VERSION
+)
+list(APPEND CMAKE_MODULE_PATH "${ovsrpro_ROOT_DIR}/share/cmake")
+
+set(
+  ovsrpro_INCLUDE_DIR
+  "${ovsrpro_ROOT_DIR}/include"
+  CACHE
+  PATH
+  "The path to Ovsrpro project header files."
+)
+set(
+  ovsrpro_LIBRARY_DIR
+  "${ovsrpro_ROOT_DIR}/lib"
+  CACHE
+  PATH
+  "The path to Ovsrpro project library files."
+)
+set(
+  ovsrpro_CONFIG_PATH
+  "${ovsrpro_ROOT_DIR}/qt5/lib/cmake"
+  CACHE
+  PATH
+  "The path to use to find Qt5 CMake configuration files."
+)
+mark_as_advanced(
+  ovsrpro_ROOT_DIR
+  ovsrpro_INCLUDE_DIR
+  ovsrpro_LIBRARY_DIR
+  ovsrpro_CONFIG_PATH
+)

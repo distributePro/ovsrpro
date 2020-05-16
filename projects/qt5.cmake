@@ -11,8 +11,8 @@
 
 xpProOption(qt5)
 set(QT5_MAJOR_VERSION 5)
-set(QT5_MINOR_VERSION 14)
-SET(QT5_PATCH_VERSION 2)
+set(QT5_MINOR_VERSION 12)
+SET(QT5_PATCH_VERSION 8)
 set(QT5_VERSION ${QT5_MAJOR_VERSION}.${QT5_MINOR_VERSION}.${QT5_PATCH_VERSION})
 set(QT5_REPO http://code.qt.io/cgit/qt/qt5.git)
 set(QT5_DOWNLOAD_FILE qt-everywhere-src-${QT5_VERSION}.tar.xz)
@@ -26,7 +26,7 @@ set(PRO_QT5
   GIT_ORIGIN ${QT5_REPO}
   GIT_TAG v${QT5_VERSION}
   DLURL http://download.qt.io/archive/qt/${QT5_MAJOR_VERSION}.${QT5_MINOR_VERSION}/${QT5_VERSION}/single/${QT5_DOWNLOAD_FILE}
-  DLMD5 b3d2b6d00e6ca8a8ede6d1c9bdc74daf
+  DLMD5 8ec2a0458f3b8e9c995b03df05e006e4
 )
 
 
@@ -133,11 +133,6 @@ function(build_qt5)
   endif()
   qt5CheckDependencies()
   setConfigureOptions()
-  configure_file(
-    "${PRO_DIR}/use/useop-qt5-config.cmake"
-    "${STAGE_DIR}/share/cmake/useop-qt5-config.cmake"
-    COPYONLY
-  )
 
   if(WIN32)
     set(MAKE_CMD nmake)
