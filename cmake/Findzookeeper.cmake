@@ -4,24 +4,10 @@ Findzookeeper
 
 Finds the ZooKeeper library installed as part of Ovsrpro.
 
-Possible Components
--------------------
-
-The components can be specified in ``find_package()``:
-
-``multithreaded``
-  The multi-threaded version of the ZooKeeper C API.
-``singlethreaded``
-  The single threaded version of the ZooKeeper C API.
-
-If no components are specified, both are searched for.
-
 Imported Targets
 ----------------
 
-This module provides the imported targets ``zookeeper::mt`` and
-``zookeeper::st``. These correspond to the ``multithreaded`` and
-``singlethreaded`` components, respectively.
+This module provides the imported target ``zookeeper::zookeeper``.
 
 Result Variables
 ----------------
@@ -41,6 +27,10 @@ This module defines the following variables:
   affecting ``zookeeper_FOUND``.
 #]========================================================================]
 
+if(TARGET zookeeper::zookeeper)
+  return()
+endif()
+
 set(zookeeper_VERSION @ZOOKEEPER_VERSION@)
 
 find_path(
@@ -52,73 +42,55 @@ find_path(
 )
 mark_as_advanced(zookeeper_INCLUDE_DIR)
 
-if(NOT zookeeper_FIND_COMPONENTS)
-  set(zookeeper_FIND_COMPONENTS multithreaded singlethreaded)
-endif()
-foreach(component IN LISTS zookeeper_FIND_COMPONENTS)
-  if(component STREQUAL multithreaded)
-    set(library_suffix "mt")
-  elseif(component STREQUAL singlethreaded)
-    set(library_suffix "st")
-  endif()
-  find_library(
-    zookeeper_LIBRARY_${component}_RELEASE
-    NAME zookeeper_${library_suffix}
-    PATHS "${ovsrpro_LIBRARY_DIR}"
-    DOC "The release build of the ZooKeeper ${component} library."
-    NO_DEFAULT_PATH
-  )
-  mark_as_advanced(zookeeper_LIBRARY_${component}_RELEASE)
-  if(zookeeper_LIBRARY_${component}_RELEASE)
-    set(zookeeper_${component}_FOUND true)
-  else()
-    set(zookeeper_${component}_FOUND false)
-  endif()
-  find_library(
-    zookeeper_LIBRARY_${component}_DEBUG
-    NAME zookeeper_${library_suffix}
-    PATHS "${ovsrpro_LIBRARY_DIR}/zookeeperDebug"
-    DOC "The debug build of the ZooKeeper ${component} library."
-    NO_DEFAULT_PATH
-  )
-  mark_as_advanced(zookeeper_LIBRARY_${component}_DEBUG)
-endforeach()
+find_library(
+  zookeeper_LIBRARY_RELEASE
+  NAME zookeeper
+  PATHS "${ovsrpro_LIBRARY_DIR}"
+  DOC "The release build of the ZooKeeper library."
+  NO_DEFAULT_PATH
+)
+mark_as_advanced(zookeeper_LIBRARY_RELEASE)
+
+find_library(
+  zookeeper_LIBRARY_DEBUG
+  NAME zookeeperd
+  PATHS "${ovsrpro_LIBRARY_DIR}"
+  DOC "The debug build of the ZooKeeper library."
+  NO_DEFAULT_PATH
+)
+mark_as_advanced(zookeeper_LIBRARY_DEBUG)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
   zookeeper
   REQUIRED_VARS
     zookeeper_INCLUDE_DIR
+    zookeeper_LIBRARY_RELEASE
   VERSION_VAR zookeeper_VERSION
-  HANDLE_COMPONENTS
 )
 
 if(zookeeper_FOUND)
-  foreach(component IN LISTS zookeeper_FIND_COMPONENTS)
-    if(NOT TARGET zookeeper::${component})
-      add_library(zookeeper::${component} IMPORTED UNKNOWN)
-      set_target_properties(
-        zookeeper::${component}
-        PROPERTIES
-          INTERFACE_INCLUDE_DIRECTORIES "${zookeeper_INCLUDE_DIR}"
-          IMPORTED_LOCATION "${zookeeper_LIBRARY_${component}_RELEASE}"
-          IMPORTED_LOCATION_RELEASE "${zookeeper_LIBRARY_${component}_RELEASE}"
-          IMPORTED_LOCATION_MINSIZEREL "${zookeeper_LIBRARY_${component}_RELEASE}"
-          IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
-      )
-      if(zookeeper_LIBRARY_DEBUG)
-        set_target_properties(
-          zookeeper::${component}
-          PROPERTIES
-            IMPORTED_LOCATION_DEBUG "${zookeeper_LIBRARY_${component}_DEBUG}"
-            IMPORTED_LOCATION_RELWITHDEBINFO "${zookeeper_LIBRARY_${component}_DEBUG}"
-        )
-        set_property(
-          TARGET zookeeper::${component}
-          APPEND
-          PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
-        )
-      endif()
-    endif()
-  endforeach()
+  add_library(zookeeper::zookeeper IMPORTED UNKNOWN)
+  set_target_properties(
+    zookeeper::zookeeper
+    PROPERTIES
+      INTERFACE_INCLUDE_DIRECTORIES "${zookeeper_INCLUDE_DIR}"
+      IMPORTED_LOCATION "${zookeeper_LIBRARY_RELEASE}"
+      IMPORTED_LOCATION_RELEASE "${zookeeper_LIBRARY_RELEASE}"
+      IMPORTED_LOCATION_MINSIZEREL "${zookeeper_LIBRARY_RELEASE}"
+      IMPORTED_CONFIGURATIONS "RELEASE;MINSIZEREL"
+  )
+  if(zookeeper_LIBRARY_DEBUG)
+    set_target_properties(
+      zookeeper::zookeeper
+      PROPERTIES
+        IMPORTED_LOCATION_DEBUG "${zookeeper_LIBRARY_DEBUG}"
+        IMPORTED_LOCATION_RELWITHDEBINFO "${zookeeper_LIBRARY_DEBUG}"
+    )
+    set_property(
+      TARGET zookeeper::zookeeper
+      APPEND
+      PROPERTY IMPORTED_CONFIGURATIONS "DEBUG;RELWITHDEBINFO"
+    )
+  endif()
 endif()

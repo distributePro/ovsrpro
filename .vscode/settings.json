@@ -1,4 +1,7 @@
 {
+    "cmake.configureSettings": {
+        "XP_STEP": "build"
+    },
     "cSpell.words": [
         "STGZ",
         "Scrn",
