@@ -72,7 +72,6 @@ find_path(
   DOC "ovsrpro directory"
 )
 
-# TODO Replace this with the version variable, so it can be configured.
 set(ovsrpro_VERSION @version@)
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(

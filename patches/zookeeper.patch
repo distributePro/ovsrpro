@@ -1,36 +1,43 @@
-diff --git a/build.xml b/build.xml
-index f40db15a..d6f0e78a 100644
---- a/build.xml
-+++ b/build.xml
-@@ -79,8 +79,8 @@ xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
-     <property name="revision.properties" value="revision.properties" />
-     <property file="${basedir}/src/java/${revision.properties}" />
-     
--    <property name="javac.target" value="1.6" />
--    <property name="javac.source" value="1.6" />
-+    <property name="javac.target" value="1.7" />
-+    <property name="javac.source" value="1.7" />
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 000000000..258b968c8
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,2 @@
++cmake_minimum_required(VERSION 3.5)
++add_subdirectory(zookeeper-client/zookeeper-client-c)
+diff --git a/zookeeper-client/zookeeper-client-c/CMakeLists.txt b/zookeeper-client/zookeeper-client-c/CMakeLists.txt
+index 12773fc92..aa0d96f92 100644
+--- a/zookeeper-client/zookeeper-client-c/CMakeLists.txt
++++ b/zookeeper-client/zookeeper-client-c/CMakeLists.txt
+@@ -150,14 +150,10 @@ check_struct_has_member("struct sockaddr_in6" sin6_addr "netinet/in.h" ZOO_IPV6_
+ # configure
+ configure_file(cmake_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/config.h)
  
-     <property name="src.dir" value="${basedir}/src" />
-     <property name="java.src.dir" value="${src.dir}/java/main" />
-diff --git a/src/c/configure.ac b/src/c/configure.ac
-index 2483d38f..3da240fb 100644
---- a/src/c/configure.ac
-+++ b/src/c/configure.ac
-@@ -29,13 +29,9 @@ AC_CONFIG_HEADER([config.h])
- AC_ARG_WITH(cppunit,
-         [  --without-cppunit       do not use CPPUNIT])
+-# hashtable library
+-set(hashtable_sources src/hashtable/hashtable_itr.c src/hashtable/hashtable.c)
+-add_library(hashtable STATIC ${hashtable_sources})
+-target_include_directories(hashtable PUBLIC include)
+-target_link_libraries(hashtable PUBLIC $<$<OR:$<PLATFORM_ID:Linux>,$<PLATFORM_ID:FreeBSD>>:m>)
+-
+ # zookeeper library
+ set(zookeeper_sources
++  src/hashtable/hashtable_itr.c
++  src/hashtable/hashtable.c
+   src/zookeeper.c
+   src/recordio.c
+   generated/zookeeper.jute.c
+@@ -178,9 +174,12 @@ endif()
+ add_library(zookeeper STATIC ${zookeeper_sources})
+ target_include_directories(zookeeper PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/include generated)
+ target_link_libraries(zookeeper PUBLIC
+-  hashtable
+   $<$<PLATFORM_ID:Linux>:rt> # clock_gettime
++  $<$<PLATFORM_ID:Linux>:m>
+   $<$<PLATFORM_ID:Windows>:ws2_32>) # Winsock 2.0
++install(TARGETS zookeeper DESTINATION lib)
++install(DIRECTORY include/ DESTINATION include/zookeeper CONFIGURATIONS Release)
++install(FILES generated/zookeeper.jute.h DESTINATION include/zookeeper CONFIGURATIONS Release)
  
--if test "$with_cppunit" = "no" ; then
--   CPPUNIT_PATH="No_CPPUNIT"
--   CPPUNIT_INCLUDE=
--   CPPUNIT_LIBS=
--else
--   AM_PATH_CPPUNIT(1.10.2)
--fi
-+CPPUNIT_PATH="No_CPPUNIT"
-+CPPUNIT_INCLUDE=
-+CPPUNIT_LIBS=
- 
- if test "$CALLER" = "ANT" ; then
- CPPUNIT_CFLAGS="$CPPUNIT_CFLAGS -DZKSERVER_CMD=\"\\\"${base_dir}/src/c/tests/zkServer.sh\\\"\""
+ option(WITH_OPENSSL "turn ON/OFF SSL support, or define openssl library location (default: ON)" ON)
+ message("-- using WITH_OPENSSL=${WITH_OPENSSL}")
