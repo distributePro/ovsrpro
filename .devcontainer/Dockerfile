@@ -15,12 +15,7 @@ RUN set -eux; \
     cmake3 \
     git \
     make \
-    wget; \
-  # yum --assumeyes clean all; \
-  ln -s cmake3 /usr/bin/cmake; \
-  ln -s ctest3 /usr/bin/ctest; \
-  ln -s cpack3 /usr/bin/cpack; \
-  yum install --assumeyes \
+    wget \
     # Required by GLEW
     libX11-devel \
     mesa-libGL-devel \
@@ -43,6 +38,10 @@ RUN set -eux; \
     java-11-openjdk-devel \
     libtool; \
   yum --assumeyes clean all; \
+  ln -s ccmake3 /usr/bin/ccmake; \
+  ln -s cmake3 /usr/bin/cmake; \
+  ln -s ctest3 /usr/bin/ctest; \
+  ln -s cpack3 /usr/bin/cpack; \
   wget https://github.com/distributePro/externpro/releases/download/18.01.2/externpro-18.01.2-gcc631-64-Linux.sh; \
   chmod 744 externpro-18.01.2-gcc631-64-Linux.sh; \
   ./externpro-18.01.2-gcc631-64-Linux.sh \
