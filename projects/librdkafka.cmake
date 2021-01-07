@@ -19,7 +19,7 @@ set(PRO_LIBRDKAFKA
   DLURL ${REPO_UPSTREAM}/archive/${VER}.tar.gz
   DLMD5 17017d9bdaf1398087d1f0dcad2e5cc7
   DLNAME librdkafka-${VER}.tar.gz
-  PATCH ${PATCH_DIR}/librdkafka.patch
+  #PATCH ${PATCH_DIR}/librdkafka.patch
   DIFF ${REPO}/compare/edenhill:
   )
 ########################################
@@ -106,7 +106,6 @@ function(build_librdkafka)
   xpStringAppendIfDne(CMAKE_CXX_FLAGS "-fPIC")
   xpStringAppendIfDne(CMAKE_C_FLAGS "-fPIC")
   set(XP_CONFIGURE
-      -DRDKAFKA_BUILD_STATIC=on
       -DCMAKE_DEBUG_POSTFIX=${CMAKE_DEBUG_POSTFIX}
       -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
       -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}
