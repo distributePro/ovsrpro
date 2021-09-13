@@ -22,7 +22,6 @@ set(PRO_NOVAS
   DLNAME novasc3.1.tar.gz
   PATCH ${PATCH_DIR}/novas.patch
   REPO "repo" "https://github.com/distributePro/NOVAS" "Mirror of the NOVAS C library"
-  GIT_ORIGIN git://github.com/distributepro/NOVAS.git
   GIT_TAG ${VER} # what to 'git checkout'
   GIT_REF ${VER} # create path from this tag to 'git checkout'
 )

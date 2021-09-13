@@ -3,7 +3,7 @@ if(COMMAND xpFindPkg)
 endif()
 
 # So ${PQSL_LIBS} can be used
-opFindPkg(PKGS psql)
+find_package(useop-psql REQUIRED PATHS "${CMAKE_CURRENT_LIST_DIR}")
 
 # determine OP_BUILD_STATIC
 include(${CMAKE_CURRENT_LIST_DIR}/opopts.cmake)
