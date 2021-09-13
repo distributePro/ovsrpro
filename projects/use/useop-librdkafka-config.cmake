@@ -11,7 +11,7 @@ set(LIBRDKAFKA_INCLUDE_DIR ${OP_ROOTDIR}/include)
 set(LIBRDKAFKA_LIBS_DIR ${OP_ROOTDIR}/lib)
 include_directories(SYSTEM ${LIBRDKAFKA_INCLUDE_DIR})
 
-xpFindPkg(PKGS openssl zlib)
+xpFindPkg(PKGS zlib)
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} build_type)
 
@@ -47,7 +47,6 @@ else()
     ${ZLIB_LIBRARIES}
     pthread
     rt
-    ${OPENSSL_LIBRARIES}
     crypto
   )
 endif()
