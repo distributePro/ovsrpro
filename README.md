@@ -1,76 +1,92 @@
 # ovsrpro
 
-builds overseer [projects](projects/README.md) by leveraging externpro
+A meta-package for developing projects that use these libraries.
 
-Supports compiling the following projects from source for both Windows and Linux:
-- CPPZMQ (https://github.com/zeromq/cppzmq)
-- GLEW (http://glew.sourceforge.net)
-- HDF5 (http://www.hdfgroup.org)
-- MIT Kerberos (http://web.mit.edu/kerberos)
-- librdkafka (https://github.com/edenhill/librdkafka)
-- NOVAS (http://aa.usno.navy.mil/software/novas/novas\_info.php)
-- PostreSQL (http://www.postresql.org)
-- Qt5 (http://code.qt.io)
-- Qwt (http://qwt.sourceforge.net)
-- ZeroMQ (https://zeromq.org)
-- ZooKeeper (https://github.com/apache/zookeeper.git)
+## Using ovsrpro
 
-Depends on an installed version of externpro (https://github.com/smanders/externpro).
+Throughout this section, I assume
 
-Some additional packages may need to be installed for the Qt Web modules to build, here is a list of ones that commonly need to be installed on a CentOS 6 system (additional ones may be required depending on system configuration):
+- Your installation prefix is */opt/extern*,
+- You installed to a subdirectory of the installation prefix,
+- Your version of ovsrpro is 21.09.
 
-| Yum | Apt |
-|:----|:----|
-| dbus-devel          | libdbus-1-dev |
-| libXScrnSaver-devel | libxss-dev |
-| libXtst-devel       | libxtst-dev |
-| pciutils-devel      | libpci-dev |
-| mesa-libEGL-devel   | libegl1-mesa-dev |
-| gperf               | gperf |
-| expat-devel         | libexpat1-dev |
-|                     | bison |
+If you do any of these differently, make the appropriate substitutes in the instructions and example commands.
 
-All projects can be built as static or shared libraries.  For static windows
-builds, libraries are compiled with the /MT flag.
+### Installation
 
-Each built project has a corresponding folder inside the share directory that
-contains files pertinent to the project (i.e. README and/or LICENSE files, flags
-used at compile time, etc.)
+1. Install ovsrpro on your platform. See the [releases page](https://github.com/distributePro/ovsrpro/releases) for downloads.
+   1. We recommend installing to */opt/extern/*, but that is not required.
+1. Create a symbolic link from */opt/extern/ovsrpro/* */opt/extern/ovsrpro-21.09-gcc931-64-Linux/*.
+1. Update your ldconfig.
 
-To build an install package with these packages, perform the following steps:
 ```bash
-git clone https://github.com/distributePro/ovsrpro.git
-cd ovsrpro
-git checkout <tag>		# where tag is, for example 17.02.1
-mkdir ovsrpro-build
-cd ovsrpro-build
-cmake ../ovsrpro -DXP_STEP=build
-make -j8			# where the -j8 specifies the number of cpus to use
-make package
+./ovsrpro-21.09-gcc931-64-Linux.sh \
+  --prefix=/opt/extern \
+  --include-subdir
+ln -s /opt/extern/ovsrpro-21.09-gcc931-64-Linux/ /opt/extern/ovsrpro
 ```
 
-For custom builds, the following cmake options are available (via the -D option)
-- XP\_BUILD\_DEBUG - build a debug version of the libraries along with the release
-- XP\_BUILD\_STATIC - build static libraries rather than dynamic.  Note that some
-  project build systems build both static and shared by default
-- XP\_DEFAULT - Compiles all of the available packages.  To only compile a subset
-  of the packages, set XP\_DEFAULT=0 and specify the individual packages desired.
-- XP\_STEP - may be used to define which steps to complete of the build process
-          - see the externpro documentation for available options
-- PACKAGE\_TYPE - optionally specify a non-default CPACK\_GENERATOR to use, if not
-  present the default STGZ generator is used. (RPM is the only other generator
-  type that has been tested)
+### Finding ovsrpro with CMake
 
-Available package options when XP\_DEFAULT=0 or is not defined
-- XP\_PRO\_CPPZMQ - build the cppzmq package (depends on zeromq)
-- XP\_PRO\_GLEW - build the GLEW package
-- XP\_PRO\_HDF5 - build the HDF5 package
-- XP\_PRO\_KERBEROS - build the MIT kerberos package
-- XP\_PRO\_LIBRDKAFKA - build the librdkafka package
-- XP\_PRO\_NOVAS - build the novas package
-- XP\_PRO\_PSQL - build the postgresql package
-- XP\_PRO\_QT5 - build the qt5 package
-- XP\_PRO\_QWT - build the qwt package
-- XP\_PRO\_ZEROMQ - build the zeromq package
-- XP\_PRO\_ZOOKEEPER - build the zookeeper package
+1. Copy */opt/extern/ovsrpro-21.09-gcc931-64-Linux/share/cmake/Findovsrpro.cmake* to the root directory of your project.
+1. In your root CMakeLists.txt file, add these lines:
+   ```cmake
+   set(ovsrpro_rev 21.09)
+   find_package(ovsrpro)
+   ```
+1. Use `opFindPkg()` to load an ovsrpro package:
+   ```cmake
+   opFindPkg(qwt)
+   ```
 
+## Building ovsrpro
+
+### Build Environment
+
+We recommend using our VS Code [development container](https://code.visualstudio.com/docs/remote/containers).
+Follow these steps to get the container setup.
+
+1. Clone the repository.
+1. Make a build directory adjacent to the repository.
+   ```bash
+   cd /path/to/repository
+   mkdir ../build
+   ```
+1. Open the repository folder in VS Code.
+1. Use the VS Code command `Remote Containers: Rebuild and Reopen in Container`.
+
+If you don't want to use the development container, you need to maintain your own build environment.
+Follow these instructions to set up your system.
+
+1. Install these tools:
+   - externpro --- Install [externpro](https://github.com/distributePro/externpro) for your platform.
+   - CMake --- Install [CMake](https://cmake.org/download/).
+   - GCC --- Install GCC with your package management system. Clang may work, but we don't support it.
+1. Install 3rd party development packages. See our development container [Dockerfile](.devcontainer/Dockerfile) for the complete list.
+
+### Configuring and Building
+
+Run these steps in your build directory:
+
+1. Use CMake to generate the build system.
+1. Use your build tool to build the projects.
+1. Use CPack to create the installation package.
+
+Here is a basic complete example:
+
+```bash
+cmake -D XP_STEP=build ../ovsrpro
+cmake --build .
+cpack -G STGZ
+```
+
+Refer to the [cmake(1)](https://cmake.org/cmake/help/latest/manual/cmake.1.html) and [cpack(1)](https://cmake.org/cmake/help/latest/manual/cpack.1.html) documentation for more options.
+See the [externpro documentation](https://github.com/distributePro/externpro/blob/master/README.md) for available CMake options.
+In addition, there are a few undocumented options which you might find useful.
+
+| Option | Type | Default | Description |
+|:---|:---|:---|:---|
+| `XP_BUILD_DEBUG` | boolean | `true` | Build debug versions of the projects. Note that release versions are always built. |
+| `XP_DEFAULT` | boolean | `true` | Build all the ovsrpro projects. If you disable this option, you can enable individual projects with their `XP_PRO_<project>` options. |
+| `XP_MARKPARTIAL` | boolean | `true` | Add "-p" to the ovsrpro project files, such as the installation package. This only occurs if some projects are excluded from the build. |
+| `XP_PRO_<projct>` | boolean | `false` | Configure and build the \<project\> project. If `XP_DEFAULT` is enabled, these options are ignored. |
