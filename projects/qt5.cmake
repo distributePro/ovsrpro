@@ -31,7 +31,8 @@ set(PRO_QT5
 macro(setConfigureOptions)
   set(QT5_INSTALL_PATH ${STAGE_DIR}/qt5)
   # Define configure parameters
-  set(QT5_CONFIGURE
+  set(
+    QT5_CONFIGURE
     -qt-zlib
     -qt-pcre
     -qt-libpng
@@ -46,7 +47,9 @@ macro(setConfigureOptions)
     -nomake examples
     -make tools
     -nomake tests
-    -prefix ${QT5_INSTALL_PATH})
+    -prefix ${QT5_INSTALL_PATH}
+    -xkbcommon
+  )
   # Check whether to include debug build (debug-and-release not supported on Unix)
   if(${XP_BUILD_DEBUG} AND WIN32)
     list(APPEND QT5_CONFIGURE -debug-and-release)

@@ -27,6 +27,7 @@ RUN set -eux; \
     gperf \
     libxcb-devel \
     libxkbcommon-devel \
+    libxkbcommon-x11-devel \
     openssl-devel \
     which \
     zlib-devel \
