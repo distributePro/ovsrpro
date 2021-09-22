@@ -1,4 +1,4 @@
-FROM centos/devtoolset-6-toolchain-centos7:latest
+FROM centos/devtoolset-7-toolchain-centos7:latest
 
 LABEL \
   description="Ovsrpro Centos 7 Development Container" \
@@ -12,6 +12,7 @@ RUN set -eux; \
     # This repository gives us more modern versions of some software, such as Git.
     https://packages.endpoint.com/rhel/7/os/x86_64/endpoint-repo-1.7-1.x86_64.rpm; \
   yum install --assumeyes \
+    devtoolset-9-toolchain \
     git \
     make \
     wget \
@@ -39,18 +40,8 @@ RUN set -eux; \
     libtool; \
   yum --assumeyes clean all; \
   wget \
-    --output-document=cmake.sh \
-    https://github.com/Kitware/CMake/releases/download/v3.19.3/cmake-3.19.3-Linux-x86_64.sh; \
-  chmod 744 cmake.sh; \
-  mkdir /opt/cmake; \
-  ./cmake.sh --prefix=/opt/cmake --skip-license --exclude-subdir; \
-  ln -s /opt/cmake/bin/ccmake /usr/bin/ccmake; \
-  ln -s /opt/cmake/bin/ctest /usr/bin/ctest; \
-  ln -s /opt/cmake/bin/cpack /usr/bin/cpack; \
-  ln -s /opt/cmake/bin/cmake /usr/bin/cmake; \
-  wget \
     --output-document=externpro.sh \
-    https://github.com/distributePro/externpro/releases/download/18.01.3/externpro-18.01.3-gcc631-64-Linux.sh; \
+    https://github.com/distributePro/externpro/releases/download/21.04.1/externpro-21.04.1-gcc931-64-Linux.sh; \
   chmod 744 externpro.sh; \
   ./externpro.sh \
     --include-subdir \
@@ -65,6 +56,17 @@ RUN set -eux; \
   echo ". ~/git-completion.bash" >> ${HOME}/.bashrc; \
   echo ". ~/git-prompt.sh" >> ${HOME}/.bashrc; \
   echo "alias ls='ls --color=auto'" >> ${HOME}/.bashrc; \
-  echo "PS1='\n\[\e[01;39m\]ovsrpro-dev \[\e[01;35m\]\w\[\e[01;36m\]\$(__git_ps1)\[\e[0m\]\n'" >> ${HOME}/.bashrc
+  echo "PS1='\n\[\e[01;39m\]ovsrpro-dev \[\e[01;35m\]\w\[\e[01;36m\]\$(__git_ps1)\[\e[0m\]\n'" >> ${HOME}/.bashrc; \
+  sed --in-place 's/devtoolset-7/devtoolset-9/' /opt/app-root/etc/scl_enable
+
+RUN set -eux; \
+  wget --output-document=cmake.sh \
+    https://github.com/Kitware/CMake/releases/download/v3.21.2/cmake-3.21.2-linux-x86_64.sh; \
+  chmod 744 cmake.sh; \
+  ./cmake.sh --install-prefix=/opt/cmake --exclude-subdir --skip-license; \
+  ln -s /opt/cmake/bin/ccmake /usr/bin/ccmake; \
+  ln -s /opt/cmake/bin/cmake /usr/bin/cmake; \
+  ln -s /opt/cmake/bin/ctest /usr/bin/ctest; \
+  ln -s /opt/cmake/bin/cpack /usr/bin/cpack
 
 CMD ["/bin/bash"]
