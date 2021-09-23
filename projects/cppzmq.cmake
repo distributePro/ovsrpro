@@ -28,8 +28,11 @@ function(build_cppzmq)
     return()
   endif()
 
-  configure_file(${PRO_DIR}/use/useop-cppzmq-config.cmake ${STAGE_DIR}/share/cmake/
-    @ONLY NEWLINE_STYLE LF
+  configure_file(
+    "${PRO_DIR}/use/Findcppzmq.cmake"
+    "${STAGE_DIR}/share/cmake/"
+    @ONLY
+    NEWLINE_STYLE LF
   )
  
   set(XP_CONFIGURE
