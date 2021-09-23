@@ -21,8 +21,11 @@ function(build_zeromq)
   if (NOT (XP_DEFAULT OR XP_PRO_ZEROMQ))
     return()
   endif()
-  configure_file(${PRO_DIR}/use/useop-zeromq-config.cmake ${STAGE_DIR}/share/cmake/
-    @ONLY NEWLINE_STYLE LF
+  configure_file(
+    "${PRO_DIR}/use/FindZeroMQ.cmake"
+    "${STAGE_DIR}/share/cmake/"
+    @ONLY
+    NEWLINE_STYLE LF
   )
 
   xpSetPostfix()
