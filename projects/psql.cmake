@@ -13,7 +13,7 @@ set(PRO_PSQL
   NAME psql
   WEB "PostgreSQL" http://www.postgresql.org/ "PostgreSQL"
   LICENSE "open" http://www.postgresql.org/about/licence "PostgreSQL license"
-  DESC "PostgreSQL redistributable binaries"  
+  DESC "PostgreSQL redistributable binaries"
   REPO "repo" ${PSQL_REPO} "Mirror of the official PostgreSQL GIT repository on github"
   VER ${VER}
   GIT_ORIGIN ${PSQL_REPO}.git

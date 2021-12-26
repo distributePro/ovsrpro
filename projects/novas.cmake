@@ -1,5 +1,5 @@
 ########################################
-# novas 
+# novas
 ########################################
 xpProOption(novas)
 set(NOVAS_SRC_PATH ${CMAKE_BINARY_DIR}/xpbase/Source/novas)

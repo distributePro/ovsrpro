@@ -1,5 +1,5 @@
 ########################################
-# cppzmq 
+# cppzmq
 ########################################
 xpProOption(cppzmq)
 set(CPPZMQ_VER 4.2.1)
@@ -34,7 +34,7 @@ function(build_cppzmq)
     @ONLY
     NEWLINE_STYLE LF
   )
- 
+
   set(XP_CONFIGURE
     -DZeroMQ_DIR=${STAGE_DIR}/share/cmake/ZeroMQ
     -DCMAKE_INSTALL_INCLUDEDIR=include/cppzmq
