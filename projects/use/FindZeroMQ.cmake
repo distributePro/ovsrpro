@@ -23,7 +23,7 @@ Then, just use ``find_package()`` and ``target_link_libraries()``.
 .. code-block:: cmake
 
   find_package(ZeroMQ)
-  
+
   # Define your target as normal.
   target_link_libraries(YourTarget PRIVATE ZeroMQ::ZeroMQ)
 
