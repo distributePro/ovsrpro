@@ -44,4 +44,3 @@ function(build_cppzmq)
   add_dependencies(cppzmq zeromq_Release)
 
 endfunction()
-
